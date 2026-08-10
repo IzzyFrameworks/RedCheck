@@ -243,3 +243,57 @@ def test_hallucination():
     # Hallucinated response
     res_hallucinated = checker.evaluate_hallucination(context, "The green dog flies over the ocean.")
     assert res_hallucinated["status"] == "FAIL"
+    import os
+import re
+
+class RedCheck:
+    def __init__(self, openai_api_key=None, anthropic_api_key=None):
+        self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
+        self.anthropic_api_key = anthropic_api_key or os.getenv("ANTHROPIC_API_KEY")
+
+    def evaluate_relevance(self, prompt: str, response: str) -> dict:
+        """
+        Evaluates whether the response is relevant to the provided prompt.
+        """
+        prompt_words = set(re.findall(r'\w+', prompt.lower()))
+        response_words = set(re.findall(r'\w+', response.lower()))
+
+        if not prompt_words:
+            return {"score": 0.0, "status": "FAIL", "method": "lexical_fallback"}
+
+        overlap = prompt_words.intersection(response_words)
+        score = round(len(overlap) / len(prompt_words), 2)
+        status = "PASS" if score >= 0.3 else "FAIL"
+
+        return {
+            "score": score,
+            "status": status,
+            "method": "lexical_fallback"
+        }
+
+    def evaluate_hallucination(self, context: str, response: str) -> dict:
+        """
+        Evaluates potential hallucinations by checking response factual overlap against a reference context.
+        High score (~1.0) = High fidelity / No hallucination detected.
+        Low score (~0.0) = Likely hallucination.
+        """
+        # Palabras comunes a ignorar para evitar falsos positivos
+        stopwords = {"is", "a", "an", "the", "in", "on", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "of", "and", "or", "and/or", "as", "was", "were", "be", "been", "being"}
+
+        # Extraemos palabras y filtramos las stopwords
+        context_words = {w for w in re.findall(r'\w+', context.lower()) if w not in stopwords}
+        response_words = {w for w in re.findall(r'\w+', response.lower()) if w not in stopwords}
+
+        if not response_words:
+            return {"score": 0.0, "status": "FAIL", "method": "hallucination_check"}
+
+        overlap = response_words.intersection(context_words)
+        score = round(len(overlap) / len(response_words), 2)
+        
+        status = "PASS" if score >= 0.5 else "FAIL"
+
+        return {
+            "score": score,
+            "status": status,
+            "method": "hallucination_check"
+        }
