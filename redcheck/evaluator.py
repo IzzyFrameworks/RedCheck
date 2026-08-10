@@ -175,3 +175,71 @@ class RedCheck:
             fallback = self._evaluate_lexical(prompt, response)
             fallback["error"] = str(e)
             return fallback
+        import os
+import re
+
+class RedCheck:
+    def __init__(self, openai_api_key=None, anthropic_api_key=None):
+        self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
+        self.anthropic_api_key = anthropic_api_key or os.getenv("ANTHROPIC_API_KEY")
+
+    def evaluate_relevance(self, prompt: str, response: str) -> dict:
+        """
+        Evaluates whether the response is relevant to the provided prompt.
+        """
+        prompt_words = set(re.findall(r'\w+', prompt.lower()))
+        response_words = set(re.findall(r'\w+', response.lower()))
+
+        if not prompt_words:
+            return {"score": 0.0, "status": "FAIL", "method": "lexical_fallback"}
+
+        overlap = prompt_words.intersection(response_words)
+        score = round(len(overlap) / len(prompt_words), 2)
+        status = "PASS" if score >= 0.3 else "FAIL"
+
+        return {
+            "score": score,
+            "status": status,
+            "method": "lexical_fallback"
+        }
+
+    def evaluate_hallucination(self, context: str, response: str) -> dict:
+        """
+        Evaluates potential hallucinations by checking response factual overlap against a reference context.
+        High score (~1.0) = High fidelity / No hallucination detected.
+        Low score (~0.0) = Likely hallucination.
+        """
+        context_words = set(re.findall(r'\w+', context.lower()))
+        response_words = set(re.findall(r'\w+', response.lower()))
+
+        if not response_words:
+            return {"score": 0.0, "status": "FAIL", "method": "hallucination_check"}
+
+        overlap = response_words.intersection(context_words)
+        score = round(len(overlap) / len(response_words), 2)
+        status = "PASS" if score >= 0.4 else "FAIL"
+
+        return {
+            "score": score,
+            "status": status,
+            "method": "hallucination_check"
+        }
+    from redcheck import RedCheck
+
+def test_relevance():
+    checker = RedCheck()
+    res = checker.evaluate_relevance("What time is it?", "It is 3 PM")
+    assert "score" in res
+    assert "status" in res
+
+def test_hallucination():
+    checker = RedCheck()
+    context = "The cat is black and lives in the house."
+    
+    # Faithful response
+    res_faithful = checker.evaluate_hallucination(context, "The black cat lives in the house.")
+    assert res_faithful["status"] == "PASS"
+
+    # Hallucinated response
+    res_hallucinated = checker.evaluate_hallucination(context, "The green dog flies over the ocean.")
+    assert res_hallucinated["status"] == "FAIL"
