@@ -18,8 +18,8 @@ except ImportError:
 
 class RedCheck:
     """
-    Core evaluation engine for LLM outputs, hallucination detection,
-    and response quality verification using OpenAI, Anthropic, or lexical fallbacks.
+    Core evaluation engine for LLM outputs.
+    Provides free smart lexical evaluation and API integrations for cloud providers.
     """
 
     STOPWORDS = {
@@ -28,6 +28,8 @@ class RedCheck:
         "before", "after", "above", "below", "to", "from", "up", "down", 
         "of", "and", "or", "and/or", "as", "was", "were", "be", "been", "being"
     }
+
+    NEGATIONS = {"not", "no", "never", "without", "none", "cannot", "n't", "neither", "nor"}
 
     def __init__(
         self, 
@@ -48,7 +50,7 @@ class RedCheck:
         self._initialize_clients()
 
     def _initialize_clients(self) -> None:
-        """Sets up API clients depending on environment keys and provider settings."""
+        """Sets up API clients if explicitly provided or in environment."""
         if OPENAI_AVAILABLE and self.openai_key and self.provider in ["auto", "openai"]:
             self.openai_client = OpenAI(api_key=self.openai_key)
 
@@ -56,7 +58,7 @@ class RedCheck:
             self.anthropic_client = anthropic.Anthropic(api_key=self.anthropic_key)
 
     def evaluate_relevance(self, prompt: str, response: str) -> Dict[str, Any]:
-        """Evaluates whether the response accurately answers the prompt."""
+        """Evaluates relevance using LLM APIs if available, otherwise local smart fallback."""
         if not prompt or not response:
             return {"score": 0.0, "status": "FLAGGED", "reason": "Empty prompt or response."}
 
@@ -75,16 +77,49 @@ class RedCheck:
         return self._evaluate_lexical(prompt, response)
 
     def evaluate_hallucination(self, context: str, response: str) -> Dict[str, Any]:
-        """Evaluates potential hallucinations by checking key content word overlap against context."""
+        """
+        Smart local evaluation for hallucinations without needing paid APIs.
+        Checks for word overlap, numerical mismatches, and negation conflicts.
+        """
+        if not context or not response:
+            return {"score": 0.0, "status": "FAIL", "method": "hallucination_check"}
+
         context_words = {w for w in re.findall(r'\w+', context.lower()) if w not in self.STOPWORDS}
         response_words = {w for w in re.findall(r'\w+', response.lower()) if w not in self.STOPWORDS}
 
         if not response_words:
             return {"score": 0.0, "status": "FAIL", "method": "hallucination_check"}
 
+        # 1. Comprobación de números/fechas (Extracción estricta)
+        context_numbers = set(re.findall(r'\b\d+\b', context))
+        response_numbers = set(re.findall(r'\b\d+\b', response))
+        
+        # Si la respuesta menciona números que NO están en el contexto -> ALUCINACIÓN
+        if response_numbers and not response_numbers.issubset(context_numbers):
+            return {
+                "score": 0.10,
+                "status": "FAIL",
+                "method": "hallucination_check",
+                "reason": f"Mismatch in numeric entities. Context: {context_numbers}, Response: {response_numbers}"
+            }
+
+        # 2. Comprobación de Negaciones (Conflicto de polaridad)
+        context_negations = bool(set(re.findall(r'\w+', context.lower())).intersection(self.NEGATIONS))
+        response_negations = bool(set(re.findall(r'\w+', response.lower())).intersection(self.NEGATIONS))
+
+        # Si una tiene negación y la otra no -> Probable contradicción directa
+        if context_negations != response_negations:
+            return {
+                "score": 0.0,
+                "status": "FAIL",
+                "method": "hallucination_check",
+                "reason": "Direct negation/contradiction conflict detected."
+            }
+
+        # 3. Solapamiento Léxico Estándar
         overlap = response_words.intersection(context_words)
         score = round(len(overlap) / len(response_words), 2)
-        status = "PASS" if score >= 0.7 else "FAIL"
+        status = "PASS" if score >= 0.6 else "FAIL"
 
         return {
             "score": score,
@@ -93,7 +128,7 @@ class RedCheck:
         }
 
     def _evaluate_lexical(self, prompt: str, response: str) -> Dict[str, Any]:
-        """Fallback evaluation based on lexical overlap."""
+        """Local smart fallback evaluation for relevance."""
         prompt_words = set(re.findall(r'\w+', prompt.lower()))
         response_words = set(re.findall(r'\w+', response.lower()))
 
