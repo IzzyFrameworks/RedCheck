@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: redcheck
+Version: 0.2.0
+Summary: AI Guardrail engine for LLM output evaluation and hallucination detection
+Author-email: Nikki <nikki@example.com>
+Project-URL: Homepage, https://github.com/IzzyFrameworks/RedCheck
+Project-URL: Bug Tracker, https://github.com/IzzyFrameworks/RedCheck/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: openai>=1.0.0
+
+# RedCheck 🛡️
+
+Lightweight evaluation engine for LLM outputs, hallucination detection, and relevance verification.
+
+## Installation
+
+```bash
+pip install redcheck
+```
+
+## Quick Start
+
+```python
+from redcheck import RedCheck
+
+checker = RedCheck()
+
+result = checker.evaluate_relevance(
+    prompt="How do I configure an SMTP server?",
+    response="You need a domain, DNS records, and an SMTP port."
+)
+
+print(result)
+```
