@@ -224,7 +224,7 @@ class RedCheck:
             "status": status,
             "method": "hallucination_check"
         }
-    from redcheck import RedCheck
+    RedCheck
 
 def test_relevance():
     checker = RedCheck()
