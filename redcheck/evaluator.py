@@ -20,3 +20,13 @@ class RedCheck:
             "score": round(min(score, 1.0), 2),
             "status": "PASS" if score > 0.2 else "FLAGGED"
         }
+from redcheck import RedCheck
+
+checker = RedCheck()
+
+result = checker.evaluate_relevance(
+    prompt="How do I configure an SMTP server?",
+    response="You need a domain, DNS records, and an SMTP port."
+)
+
+print(result)
