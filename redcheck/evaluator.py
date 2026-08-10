@@ -271,16 +271,14 @@ class RedCheck:
             "method": "lexical_fallback"
         }
 
-    def evaluate_hallucination(self, context: str, response: str) -> dict:
+def evaluate_hallucination(self, context: str, response: str) -> dict:
         """
         Evaluates potential hallucinations by checking response factual overlap against a reference context.
         High score (~1.0) = High fidelity / No hallucination detected.
         Low score (~0.0) = Likely hallucination.
         """
-        # Palabras comunes a ignorar para evitar falsos positivos
         stopwords = {"is", "a", "an", "the", "in", "on", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "of", "and", "or", "and/or", "as", "was", "were", "be", "been", "being"}
 
-        # Extraemos palabras y filtramos las stopwords
         context_words = {w for w in re.findall(r'\w+', context.lower()) if w not in stopwords}
         response_words = {w for w in re.findall(r'\w+', response.lower()) if w not in stopwords}
 
@@ -290,7 +288,8 @@ class RedCheck:
         overlap = response_words.intersection(context_words)
         score = round(len(overlap) / len(response_words), 2)
         
-        status = "PASS" if score >= 0.5 else "FAIL"
+        # Exigimos al menos un 70% de palabras clave coincidentes
+        status = "PASS" if score >= 0.7 else "FAIL"
 
         return {
             "score": score,
