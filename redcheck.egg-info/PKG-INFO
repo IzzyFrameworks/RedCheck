@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: redcheck
-Version: 0.3.2
+Version: 0.3.3
 Summary: AI Guardrail engine for LLM output evaluation and hallucination detection
 Author-email: Nikki <nikki@example.com>
 Project-URL: Homepage, https://github.com/IzzyFrameworks/RedCheck
