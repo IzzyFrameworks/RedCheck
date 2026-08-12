@@ -39,6 +39,7 @@ Starting from **v0.3.5**, RedCheck features an **intelligent offline local engin
 
 ```bash
 pip install redcheck
+
 2. Local Evaluation (Offline & Free)No API keys required! RedCheck evaluates text directly on your machine.Pythonfrom redcheck import RedCheck
 
 evaluator = RedCheck()
@@ -50,6 +51,8 @@ result = evaluator.evaluate_hallucination(context=context, response=response)
 
 print(f"Status: {result['status']}") # Output: FAIL
 print(f"Reason: {result['reason']}") # Output: Detected entity or polarity mismatch
+
+
 🔌 Using Cloud LLMs (Optional)If you want to leverage external models like OpenAI or Anthropic for complex semantic reasoning, simply pass your API key:OpenAI IntegrationPythonfrom redcheck import RedCheck
 
 evaluator = RedCheck(provider="openai", api_key="your-openai-api-key")
@@ -60,4 +63,5 @@ result = evaluator.evaluate_hallucination(
 )
 
 print(result)
+
 Note: If your Cloud API key runs out of quota (Error 429), RedCheck automatically switches to the Smart Local Engine to prevent pipeline crashes.⚙️ How the Local Engine WorksRedCheck's local engine uses a multi-stage validation rule set:FeatureDescriptionExampleNumeric & Date CheckExtracts and verifies numbers/years between context and response.2020 vs 2024 ➔ FAILPolarity & NegationScans for polarity flippers (not, never, no, without)."is active" vs "is not active" ➔ FAILText SimilarityComputes baseline lexical alignment.Low overlap ➔ FAIL🛣️ Roadmap & SaaS VersionWe are actively developing RedCheck SaaS Premium:📊 Real-time Dashboard: Monitor hallucinations, latency, and token costs.🗝️ Centralized Key & Token Management.📈 Historical Metrics & Analytics.Stay tuned for updates!📄 LicenseRedCheck is open-source software licensed under the MIT License.
