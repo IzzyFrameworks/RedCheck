@@ -3,16 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/redcheck/"><img src="https://img.shields.io/pypi/v/redcheck.svg?color=blue&style=for-the-badge" alt="PyPI Version"></a>
-  <a href="https://pypi.org/project/redcheck/"><img src="https://img.shields.io/pypi/pyversions/redcheck.svg?color=green&style=for-the-badge" alt="Python Versions"></a>
-  <a href="https://github.com/IzzyFrameworks/RedCheck/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License"></a>
-  <a href="https://pepy.tech/project/redcheck"><img src="https://img.shields.io/pypi/dm/redcheck?color=orange&style=for-the-badge" alt="Downloads"></a>
-  <a href="https://github.com/IzzyFrameworks/RedCheck/stargazers"><img src="https://img.shields.io/github/stars/IzzyFrameworks/RedCheck?style=for-the-badge" alt="GitHub Stars"></a>
-</p>
-
-<p align="center">
-  <a href="https://pypi.org/project/redcheck/"><img src="https://img.shields.io/pypi/v/redcheck.svg?color=blue&style=for-the-badge" alt="PyPI Version"></a>
-  <a href="https://github.com/IzzyFrameworks/RedCheck/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License"></a>
+  <a href="https://pypi.org/project/redcheck/"><img src="https://img.shields.io/pypi/v/redcheck.svg?color=blue" alt="PyPI Version"></a>
+  <a href="https://github.com/IzzyFrameworks/RedCheck/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 </p>
 
 # RedCheck 🔍
