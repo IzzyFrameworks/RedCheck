@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "redcheck"
+version = "0.5.0"
+description = "Lightweight evaluation engine for LLM outputs and hallucination detection."
+readme = "README.md"
+authors = [
+    { name = "IzzyFrameworks" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.scripts]
+redcheck = "redcheck.cli:main"
