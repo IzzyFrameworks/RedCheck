@@ -76,13 +76,37 @@ RedCheck's local engine uses a multi-stage validation rule set:
 
 ---
 
+## 🗄️ Database & Enterprise Telemetry
+RedCheck Enterprise includes local telemetry tracking and a high-performance SQLite / SQLAlchemy architecture to log evaluations and track latency and token costs.
+
+Database File: Automatically initialized as redcheck_enterprise.db.
+
+Metrics Tracked: Latency (ms), Token Usage, Financial Risk ($ USD), and Validation Reasons.
+
+To launch the enterprise stack and interactive Streamlit dashboard locally:
+
+Bash
+# 1. Start the API backend
+uvicorn api:app --reload
+
+# 2. Launch the telemetry dashboard
+streamlit run dashboard.py
+
+---
+
+
 ## 🛣️ Roadmap & SaaS Version
 
-We are actively developing **RedCheck SaaS Premium**:
+Actively developing **RedCheck SaaS Premium**:
 
 * 📊 **Real-time Dashboard:** Monitor hallucinations, latency, and token costs.
 * 🗝️ **Centralized Key & Token Management:** Manage usage across teams.
 * 📈 **Historical Metrics & Analytics:** Track model performance over time.
+
+---
+
+## 👨‍💻 Author
+Created and maintained by IzzyFrameworks.
 
 ---
 
