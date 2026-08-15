@@ -85,12 +85,14 @@ Metrics Tracked: Latency (ms), Token Usage, Financial Risk ($ USD), and Validati
 
 To launch the enterprise stack and interactive Streamlit dashboard locally:
 
-Bash
+```bash
 # 1. Start the API backend
 uvicorn api:app --reload
 
 # 2. Launch the telemetry dashboard
 streamlit run dashboard.py
+
+```
 
 ---
 
