@@ -1,0 +1,2 @@
+[console_scripts]
+redcheck = redcheck.cli:main

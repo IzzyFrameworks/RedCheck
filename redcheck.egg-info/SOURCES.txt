@@ -1,9 +1,13 @@
 README.md
+pyproject.toml
 setup.py
 redcheck/__init__.py
+redcheck/batch.py
+redcheck/cli.py
 redcheck/evaluator.py
 redcheck.egg-info/PKG-INFO
 redcheck.egg-info/SOURCES.txt
 redcheck.egg-info/dependency_links.txt
+redcheck.egg-info/entry_points.txt
 redcheck.egg-info/top_level.txt
 tests/test_evaluator.py

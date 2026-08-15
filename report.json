@@ -1,0 +1,59 @@
+{
+    "summary": {
+        "total_evaluated": 4,
+        "passed": 1,
+        "failed": 3,
+        "pass_rate_percent": 25.0
+    },
+    "details": [
+        {
+            "id": "test_01",
+            "context": "The company was founded in 2010 and grew to 50 employees.",
+            "response": " \"The company was founded in 2010 and grew to 50 employees.\"",
+            "evaluation": {
+                "status": "PASS",
+                "lexical_coverage_percent": 100.0,
+                "reasons": [
+                    "No factual contradictions or polarity conflicts found offline."
+                ]
+            }
+        },
+        {
+            "id": "test_02",
+            "context": "The Apollo 11 mission landed on the Moon in 1969.",
+            "response": " \"The Apollo 11 mission landed on Mars in 2024.\"",
+            "evaluation": {
+                "status": "FAIL",
+                "lexical_coverage_percent": 66.67,
+                "reasons": [
+                    "Unmatched numbers detected: ['2024']",
+                    "Temporal hallucination detected. Context years: ['1969'], Response years: ['2024']"
+                ]
+            }
+        },
+        {
+            "id": "test_03",
+            "context": "Access to the restricted server is strictly prohibited without a valid security clearance.",
+            "response": " \"Access to the restricted server is permitted with a valid security clearance.\"",
+            "evaluation": {
+                "status": "FAIL",
+                "lexical_coverage_percent": 70.0,
+                "reasons": [
+                    "Polarity conflict detected: negation mismatch between context and response."
+                ]
+            }
+        },
+        {
+            "id": "test_04",
+            "context": "The server handled 500 requests per second during peak hours.",
+            "response": " \"The server handled 9999 requests per second during peak hours.\"",
+            "evaluation": {
+                "status": "FAIL",
+                "lexical_coverage_percent": 88.89,
+                "reasons": [
+                    "Unmatched numbers detected: ['9999']"
+                ]
+            }
+        }
+    ]
+}
